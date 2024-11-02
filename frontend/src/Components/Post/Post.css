@@ -1,0 +1,66 @@
+.post {
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+  position: relative;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+}
+
+.user-info img {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  margin-right: 0.75rem;
+}
+
+.username {
+  font-weight: bold;
+}
+
+.img-container {
+  position: relative;
+  cursor: pointer; /* Cambiar cursor para indicar que es clickeable */
+}
+
+.post-img {
+  width: 100%;
+  display: block;
+}
+
+.heart-overlay {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 6rem;
+  color: rgba(255, 0, 0, 0.8); /* Color rojo semitransparente para el corazón */
+  pointer-events: none; /* No interferir con los clics en la imagen */
+  opacity: 0; /* Inicialmente oculto */
+  transition: opacity 0.5s ease;
+}
+
+.heart-overlay.show-heart {
+  opacity: 1; /* Hacer visible el corazón */
+  transition: opacity 0.5s ease;
+}
+
+.post-info {
+  padding: 1rem;
+}
+
+.post-info span {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.caption {
+  font-size: 0.9rem;
+  color: #666;
+}

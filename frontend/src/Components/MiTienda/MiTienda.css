@@ -1,0 +1,52 @@
+@import url("https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap");
+
+.mi-tienda {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 2.5rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  width: 90%;
+  max-width: 800px;
+  margin: 0 auto;
+  border: 3px solid #ff69b4;
+  animation: pulse 1.5s infinite;
+}
+
+.tienda-titulo {
+  font-family: "Bubblegum Sans", cursive;
+  font-size: 2rem;
+  color: #ff69b4;
+  margin-bottom: 1rem;
+}
+
+.tienda-descripcion,
+.tienda-anuncio {
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.productos-semana {
+  text-align: left;
+}
+
+.productos-titulo {
+  font-family: "Bubblegum Sans", cursive;
+  font-size: 1.5rem;
+  color: #ff69b4;
+  margin-bottom: 1rem;
+}
+
+.productos-semana ul {
+  list-style: none;
+  padding: 0;
+}
+
+.productos-semana li {
+  background-color: #fff5f7;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  border-radius: 5px;
+  border: 1px solid #ff69b4;
+}

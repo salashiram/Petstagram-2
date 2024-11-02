@@ -1,0 +1,44 @@
+@import url("https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap");
+
+.producto-item {
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.producto-item h5 {
+  font-family: "Bubblegum Sans", cursive; /* Aplica la fuente */
+  font-weight: bold; /* Establece el texto en negrita */
+  font-size: 1.8rem; /* Aumenta el tamaño de la fuente */
+}
+
+.descuento-producto {
+  font-family: "Bubblegum Sans", cursive; /* Aplica la fuente */
+  font-weight: bold; /* Establece el texto en negrita */
+  color: #ff69b4; /* Opcional: color del texto */
+  font-size: 1.5rem; /* Aumenta el tamaño de la fuente */
+}
+
+.precio-producto {
+  font-size: 1.8rem; /* Aumenta el tamaño de la fuente */
+  color: #ff69b4;
+  margin-top: 0.5rem;
+  font-family: "Bubblegum Sans", cursive; /* Aplica la fuente */
+  font-weight: bold; /* Establece el texto en negrita */
+}
+
+.boton-comprar {
+  padding: 0.5rem 1rem;
+  background-color: #ff69b4;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+  font-family: "Bubblegum Sans", cursive; /* Aplica la fuente */
+}
+
+.boton-comprar:hover {
+  background-color: #ff1493;
+}

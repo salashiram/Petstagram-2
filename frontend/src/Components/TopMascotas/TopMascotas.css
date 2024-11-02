@@ -1,0 +1,17 @@
+.TopMascotas-container {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  background: url("../Assets/fondoTopMascotas.jpg") no-repeat center center
+    fixed;
+  background-size: cover;
+}
+
+.perfil-titulo {
+  font-family: "Bubblegum Sans", cursive;
+  color: #ceec08;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+  font-size: 5rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}

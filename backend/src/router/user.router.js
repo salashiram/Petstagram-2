@@ -1,8 +1,12 @@
 const router = require("express").Router();
 const bcrypt = require("bcrypt");
+// const multer = require("multer");
+// const storage = multer.memoryStorage();
+// const upload = multer({ storage: storage });
 const jwt = require("jsonwebtoken");
-
+const authenticateToken = require("../midd/authMiddleware.middleware");
 const User = require("../model/user.model");
+const { response } = require("express");
 
 router.get("/user", async (req, res) => {
   const user = await User.findAll();
@@ -13,25 +17,81 @@ router.get("/user", async (req, res) => {
   });
 });
 
-router.get("/user/:idUser", async (req, res) => {
-  const id = req.params.idUser;
-  const user = await User.findOne({
-    where: {
-      idUser: id,
-    },
-  });
-  res.status(200).json({
-    ok: true,
-    status: 200,
-    body: user,
-    message: "User not found",
-  });
+router.get("/user/:idUser", authenticateToken, async (req, res) => {
+  try {
+    const id = req.params.idUser;
+
+    if (id !== req.idUser.toString()) {
+      return res.status(403).json({
+        ok: false,
+        message: "Forbidden: Access to this user data is not allowed",
+      });
+    }
+
+    const user = await User.findOne({
+      where: { idUser: id },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        ok: false,
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      ok: true,
+      body: user,
+      message: "User found",
+    });
+  } catch (err) {
+    console.error("Error", err);
+    res.status(500).json({
+      ok: false,
+      message: "Error fetching user data",
+    });
+  }
+});
+
+// get data by email
+router.get("/user/email/:email", async (req, res) => {
+  const email = req.params.email;
+  try {
+    const user = await User.findOne({
+      where: {
+        email: email,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        ok: false,
+        status: 404,
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      ok: true,
+      status: 200,
+      body: user,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      ok: false,
+      status: 500,
+      message: "Error fetching user",
+      error: error.message,
+    });
+  }
 });
 
 router.post("/user", async (req, res) => {
-  const { userName, email, pass, fullName, gender, userImage } = req.body;
+  const { userName, email, pass, firstName, lastName, gender, userImage } =
+    req.body;
 
-  if (!userName || !email || !pass || !fullName || !gender) {
+  if (!userName || !email || !pass || !firstName || !lastName || !gender) {
     return res.status(400).json({
       ok: false,
       message: "All fields are required",
@@ -58,17 +118,24 @@ router.post("/user", async (req, res) => {
     const newUser = await User.create({
       userName,
       pass: hashedPassword,
-      fullName,
+      firstName,
+      lastName,
       email,
       gender,
       userImage,
     });
 
+    // Crear token JWT
+    const token = jwt.sign({ id: newUser.idUser }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
     res.status(201).json({
       ok: true,
       status: 201,
-      message: "Created user",
+      message: "User created successfully",
       user: newUser,
+      token,
     });
   } catch (error) {
     console.error(error);
@@ -81,7 +148,7 @@ router.post("/user", async (req, res) => {
   }
 });
 
-//login
+// login
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
 
@@ -94,36 +161,41 @@ router.post("/login", async (req, res) => {
 
   try {
     const user = await User.findOne({ where: { email } });
-    const isPasswordValid = await bcrypt.compare(password, user.pass);
+
     if (!user) {
-      return res.status(400).json({
-        ok: false,
-        message: "Invalida email or password",
-      });
-    } else if (!isPasswordValid) {
       return res.status(400).json({
         ok: false,
         message: "Invalid email or password",
       });
     }
 
-    //token de acceso
-    const token = jwt.sign(
-      { id: user.id, email: user.email },
-      "your-secret-key",
-      {
-        expiresIn: "1h",
-      }
-    );
+    const isPasswordValid = await bcrypt.compare(password, user.pass);
+    if (!isPasswordValid) {
+      return res.status(400).json({
+        ok: false,
+        message: "Invalid email or password",
+      });
+    }
 
-    res.status(200).json({
+    // Crear token JWT
+    const token = jwt.sign({ id: user.idUser }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    return res.status(200).json({
       ok: true,
       message: "Login successful",
       token,
+      user: {
+        id: user.idUser,
+        email: user.email,
+        fullName: user.fullName,
+        username: user.userName,
+      },
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({
+    return res.status(500).json({
       ok: false,
       message: "Error logging in",
       error: error.message,
@@ -131,43 +203,109 @@ router.post("/login", async (req, res) => {
   }
 });
 
-router.put("/user/:idUser", async (req, res) => {
-  const id = req.params.idUser;
-  const dataUser = req.body;
-  const updateUser = await User.update(
-    {
-      userName: dataUser.userName,
-      pass: dataUser.pass,
-      fullName: dataUser.fullName,
-      email: dataUser.email,
-      gender: dataUser.gender,
-      userImage: dataUser.userImage,
-    },
-    {
-      where: {
-        idUser: id,
-      },
+//  UPDATE
+router.put("/user/:idUser", authenticateToken, async (req, res) => {
+  const { idUser } = req.params;
+  const { userName, email, firstName, lastName, gender, imageProfile } =
+    req.body;
+
+  try {
+    if (idUser !== req.idUser.toString()) {
+      return res.status(403).json({
+        ok: false,
+        message: "Forbidden: Access to this user data is not allowed",
+      });
     }
-  );
-  res.status(200).json({
-    ok: true,
-    status: 200,
-    body: updateUser,
-  });
+
+    const dataUser = {};
+    if (userName) dataUser.userName = userName;
+    if (firstName) dataUser.firstName = firstName;
+    if (lastName) dataUser.lastName = lastName;
+    if (email) dataUser.email = email;
+    if (gender) dataUser.gender = gender;
+    if (imageProfile) dataUser.imageProfile = imageProfile;
+
+    const updateUser = await User.update(dataUser, {
+      where: {
+        idUser: idUser,
+      },
+    });
+
+    if (updateUser[0] === 0) {
+      console.log(idUser);
+      return res.status(404).json({
+        ok: false,
+        message: "User not found",
+        idUser,
+      });
+    }
+
+    res.status(200).json({
+      ok: true,
+      status: 200,
+      message: "User updated successfully",
+    });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    res.status(500).json({
+      ok: false,
+      status: 500,
+      message: "Error updating user",
+    });
+  }
+});
+
+// baja logica del usuario
+router.put("/user/deactivate/:idUser", async (req, res) => {
+  try {
+    const id = req.params.idUser;
+    const updateUser = await User.update(
+      {
+        isActive: 0,
+      },
+      {
+        where: {
+          idUser: id,
+        },
+      }
+    );
+    res.status(200).json({
+      ok: true,
+      status: 200,
+      body: updateUser,
+      message: "User deactivate",
+    });
+  } catch (err) {
+    console.error("Error", err);
+    res.status(500).json({
+      ok: false,
+      status: 500,
+      error: err,
+    });
+  }
 });
 
 router.delete("/user/:idUser", async (req, res) => {
-  const id = req.params.idUser;
-  const deleteUser = await User.destroy({
-    where: {
-      idUser: id,
-    },
-  });
-  res.status(200).json({
-    ok: true,
-    status: 204,
-    body: deleteUser,
-  });
+  try {
+    const id = req.params.idUser;
+    const deleteUser = await User.destroy({
+      where: {
+        idUser: id,
+      },
+    });
+    res.status(200).json({
+      ok: true,
+      status: 204,
+      body: deleteUser,
+    });
+  } catch (err) {
+    console.error("Error", err);
+    res.status(500).json({
+      ok: false,
+      status: 500,
+      error: err,
+    });
+  }
 });
 
 module.exports = router;

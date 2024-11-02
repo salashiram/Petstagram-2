@@ -1,0 +1,225 @@
+DROP DATABASE IF EXISTS Petstagram;
+CREATE DATABASE Petstagram;
+USE Petstagram;
+
+
+DROP TABLE IF EXISTS User;
+CREATE TABLE User 
+(
+	idUser INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    userName VARCHAR(50) UNIQUE NOT NULL,
+    pass VARCHAR(255) NOT NULL,
+    firstName VARCHAR(50) NOT NULL,
+    lastName VARCHAR(50) NOT NULL,
+    email VARCHAR(50) UNIQUE NOT NULL,
+    gender VARCHAR(20),
+    isActive BOOL NOT NULL DEFAULT TRUE,
+    isAdmin BOOL NOT NULL DEFAULT FALSE,
+    userImage VARCHAR(255),
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+DROP TABLE IF EXISTS userPassRecover;
+CREATE TABLE userPassRecover
+(
+	idUserPassRecover INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    idUser INT,
+    code VARCHAR(20),
+    isUserd BOOL DEFAULT 0,
+	createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+ 
+DROP TABLE IF EXISTS userPosts;
+CREATE TABLE userPosts(
+	idPost INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    idUser INT NOT NULL,
+	title VARCHAR(255),
+	content TEXT NOT NULL,
+    postImage VARCHAR(255),
+    postLevel INT NOT NULL, /* WHO CAN SEE THE POST: 1{ONLY ME}, 2{FRIENDS}, 3{EVERYONE} */
+    isActive BOOL NOT NULL DEFAULT TRUE,
+	createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+DROP TABLE IF EXISTS userPostsReactions;
+CREATE TABLE Reactions
+(
+	idReaction INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    idPost INT NOT NULL,
+    idUser INT NOT NULL,
+	createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+DROP TABLE IF EXISTS userPostsComments;
+CREATE TABLE userPostsComments
+(
+	idPostComment INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    idUser INT NOT NULL,
+    idPost INT NOT NULL,
+    content TEXT NOT NULL,
+	createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+DROP TABLE IF EXISTS Friend;
+CREATE TABLE Friend
+(
+	idFriend INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    idSender INT NOT NULL,
+    idReceptor INT NOT NULL,
+    isAccepted BOOLEAN DEFAULT 0,
+	createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+
+/* PRODUCTS */
+
+DROP TABLE IF EXISTS Product;
+CREATE TABLE Product
+(
+	idProduct INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    idCategory INT NOT NULL,
+    idDiscount INT,
+    name VARCHAR(50) NOT NULL,
+    description VARCHAR(255) NOT NULL,
+    image VARCHAR(255),
+    stock INT NOT NULL,
+    isActive BOOL DEFAULT 1,
+    unityPrice DECIMAL(10,2),
+	createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+DROP TABLE IF EXISTS Category;
+CREATE TABLE Category
+(
+	idCategory INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    description VARCHAR(255),
+    isActive BOOL DEFAULT 1,
+	createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+DROP TABLE IF EXISTS ProductDiscount;
+CREATE TABLE ProductDiscount
+(
+	idDiscount INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL,
+    description VARCHAR(255),
+    discountAmount DECIMAL(10,2) NOT NULL,
+    isActive BOOL DEFAULT 1,
+	createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+DROP TABLE IF EXISTS ShoppingCart;
+CREATE TABLE ShoppingCart
+(
+	idShoppingCart INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    idUser INT NOT NULL,
+	createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+DROP TABLE IF EXISTS ShoppingCartDetail;
+CREATE TABLE ShoppingCartDetail
+(
+	idShoppingCartDetail INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    idShoppingCart INT NOT NULL,
+    idProduct INT NOT NULL,
+    productQuantity INT NOT NULL,
+	createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+DROP TABLE IF EXISTS PurchaseOrder;
+ CREATE TABLE PurchaseOrder
+ (
+	idPurchaseOrder INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    idUser INT NOT NULL,
+    payMethod VARCHAR(20) NOT NULL,
+    userAddress VARCHAR(255) NOT NULL,
+    total DECIMAL(10,2) NOT NULL,
+	createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+ );
+ 
+ 
+DROP TABLE IF EXISTS PurchaseOrderDetail;
+CREATE TABLE PurchaseOrderDetail
+(
+	idPurchaseOrderDetail INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    idPurchaseOrder INT NOT NULL,
+    idProduct INT NOT NULL,
+    productQuantity INT NOT NULL,
+    productPrice DECIMAL(10,2) NOT NULL,
+	createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+/*	 CONSTRAINTS */
+
+ ALTER TABLE userPosts
+	ADD CONSTRAINT fk_user_post FOREIGN KEY (idUser) REFERENCES User(idUser);
+
+ ALTER TABLE Reactions
+	ADD CONSTRAINT fk_post_reaction FOREIGN KEY (idPost) REFERENCES userPosts(idPost);
+
+ ALTER TABLE Reactions
+	ADD CONSTRAINT fk_user_reaction FOREIGN KEY (idUser) REFERENCES User(idUser);
+
+ALTER TABLE userPassRecover
+	ADD CONSTRAINT fk_user_pass_recovery FOREIGN KEY (idUser) REFERENCES User(idUser);
+
+ALTER TABLE userPostsComments
+	ADD CONSTRAINT fk_post_comment FOREIGN KEY (idPost) REFERENCES userPosts(idPost);
+    
+ALTER TABLE userPostsComments
+	ADD CONSTRAINT fk_post_user_comment FOREIGN KEY (idUser) REFERENCES User(idUser);
+ 
+ALTER TABLE Friend
+	ADD CONSTRAINT fk_user_sender_request FOREIGN KEY (idSender) REFERENCES User(idUser);
+    
+ALTER TABLE Friend 
+	ADD CONSTRAINT fk_user_receptor_request FOREIGN KEY (idReceptor) REFERENCES User(idUser);
+
+ALTER TABLE Product
+	ADD CONSTRAINT fk_product_category FOREIGN KEY (idCategory) REFERENCES Category(idCategory);
+    
+ALTER TABLE Product
+	ADD CONSTRAINT fk_product_discount FOREIGN KEY (idDiscount) REFERENCES ProductDiscount(idDiscount);
+        
+ALTER TABLE ShoppingCart
+	ADD CONSTRAINT fk_user_shopping_cart FOREIGN KEY (idUser) REFERENCES User(idUser);
+    
+ALTER TABLE ShoppingCartDetail
+	ADD CONSTRAINT fk_user_shopping_cart_detail FOREIGN KEY (idShoppingCart) REFERENCES ShoppingCart(idShoppingCart);
+
+ ALTER TABLE PurchaseOrder
+	ADD CONSTRAINT fk_user_purchase_order FOREIGN KEY (idUser) REFERENCES User(idUser);
+    
+ALTER TABLE PurchaseOrderDetail
+	ADD CONSTRAINT fk_user_purchase_order_detail FOREIGN KEY(idPurchaseOrder) REFERENCES PurchaseOrder(idPurchaseOrder);
+    
+    
+ 
+    /* DEFAULT ADMIN */
+    INSERT INTO User (userName,pass,firstName,lastName,email,isAdmin)
+		VALUES('admin123','$2b$10$OZqLxws/Rcc.ybu7kkGbduQrgJxzcRsBkH4uwE1erjjqSckvHIv1m','admin','admin','admin@petstagram.com',1);
+
+ 

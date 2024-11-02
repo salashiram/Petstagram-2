@@ -7,8 +7,30 @@
     "Lucida Sans", Arial, sans-serif;
 }
 
+.modal {
+  background: white;
+  padding: 20px;
+  border-radius: 4px;
+  max-width: 400px;
+  margin: auto;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.overlay {
+  background: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 body {
-  background-image: url("/src/Components/Assets/background.jpg");
+  background-image: url("../Assets/background.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center;

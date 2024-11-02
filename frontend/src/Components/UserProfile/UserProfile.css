@@ -1,0 +1,97 @@
+@import url("https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap");
+
+.profile {
+  background-color: #fff;
+  padding: 3rem;
+  border-radius: 16px;
+  max-width: 800px;
+  margin: 5rem auto;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+  font-family: "Bubblegum Sans", cursive; /* Aplica la fuente aquí */
+}
+
+.perfil-titulo {
+  font-family: "Bubblegum Sans", cursive; /* Cambiado a una fuente infantil */
+  color: #ff1493; /* Color rosa fuerte */
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* Sombreado */
+  font-size: 2.5rem; /* Tamaño deseado */
+  margin-bottom: 2rem; /* Espacio inferior */
+  text-align: center; /* Centrar el texto */
+}
+
+.profile-info {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.profile-avatar {
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+  margin-right: 2rem;
+  border: 3px solid #333;
+}
+
+.profile-details {
+  font-size: 1.4rem;
+  text-align: left;
+  font-family: "Bubblegum Sans", cursive; /* Aplica la fuente aquí */
+}
+
+.profile-details p {
+  margin: 0.75rem 0;
+  line-height: 1.6;
+}
+
+h2 {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  color: #333;
+  font-weight: 600;
+  text-align: center;
+}
+
+.upload-section {
+  margin-top: 1rem;
+}
+
+.upload-label {
+  font-size: 1.2rem;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+#fileUpload {
+  display: block;
+  padding: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.buttonsContainer {
+  display: flex;
+  justify-content: center; /* Centra el `div` hijo horizontalmente */
+  align-items: center; /* Centra el `div` hijo verticalmente (opcional) */
+  height: 100px;
+}
+
+.buttonsContent {
+  text-align: center;
+}
+
+.buttonsContainer a {
+  width: 400px;
+  padding: 15px;
+  outline: none;
+  background-color: #ff69b4;
+  cursor: pointer;
+  color: white;
+  font-size: 20px;
+  border-radius: 50px;
+}
+.profile-container {
+  background: url(../Assets/fondoPerfil2.jpg) no-repeat center center fixed; /* Añadir la imagen de fondo */
+  background-size: cover; /* Escalar la imagen para que cubra toda la pantalla */
+}

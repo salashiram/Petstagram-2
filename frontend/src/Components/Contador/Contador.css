@@ -1,0 +1,26 @@
+@import url("https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap");
+
+/* Estilos para el contenedor del contador */
+.contador-tiempo {
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.9
+  ); /* Fondo blanco semi-transparente */
+  padding: 1rem; /* Espaciado interno */
+  border-radius: 10px; /* Bordes redondeados */
+  border: 2px solid #ff69b4; /* Color del delineado */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra */
+  margin-bottom: 2rem; /* Espacio inferior */
+}
+
+/* Estilos para el texto del contador */
+#contador-tienda {
+  font-family: "Bubblegum Sans", cursive; /* Fuente infantil */
+  font-weight: bold; /* Negrita */
+  color: #ff69b4; /* Color rosa */
+  text-align: center; /* Centrar el texto */
+  margin: 1rem 0; /* Espacio alrededor */
+  font-size: 2rem; /* Tamaño de letra aumentado */
+}

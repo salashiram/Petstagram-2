@@ -1,0 +1,165 @@
+/* Estilos generales */
+body {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+}
+.edit-profile-container {
+  background: url(../Assets/fondoPerfil2.jpg) no-repeat center center fixed; /* Añadir la imagen de fondo */
+  background-size: cover; /* Escalar la imagen para que cubra toda la pantalla */
+}
+header {
+  background-color: rgba(255, 182, 193, 0.9); /* Fondo semi-transparente */
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Sombra sutil */
+}
+nav .logo {
+  font-size: 3rem; /* Aumenta el tamaño */
+  color: #ff1493; /* Cambia el color a un tono más vibrante */
+  font-weight: bold;
+  margin-right: 2rem;
+  margin-bottom: 1rem;
+  display: block;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* Añade sombra para hacerlo más visible */
+}
+nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+}
+nav ul li {
+  margin-right: 1.5rem;
+  position: relative; /* Para el efecto hover */
+}
+nav ul li a {
+  color: #ff1493; /* Color atractivo */
+  text-decoration: none;
+  font-size: 1.5rem; /* Tamaño aumentado */
+  font-weight: bold;
+  padding: 0.5rem 0; /* Espaciado */
+  transition: color 0.3s ease, transform 0.3s ease; /* Transición suave */
+}
+nav ul li a:hover {
+  color: #fff; /* Cambiar a blanco al pasar el ratón */
+  transform: scale(1.1); /* Aumentar tamaño al pasar el ratón */
+}
+nav ul li::after {
+  content: "";
+  position: absolute;
+  bottom: -5px; /* Sombra por debajo */
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: #ff69b4; /* Línea rosa */
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+nav ul li:hover::after {
+  transform: scaleX(1); /* Expandir la línea al pasar el ratón */
+}
+/* Estilos para el perfil */
+.profile {
+  background-color: #fff;
+  padding: 3rem;
+  border-radius: 16px;
+  max-width: 800px;
+  margin: 5rem auto;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+}
+.edit-profile {
+  background-color: #fff;
+  padding: 3rem;
+  border-radius: 16px;
+  max-width: 800px;
+  margin: 5rem auto;
+  box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.1);
+}
+.profile-info {
+  display: flex;
+  align-items: flex-start; /* Cambiado para alinear los elementos al principio */
+  justify-content: center;
+}
+.profile-avatar {
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+  margin-right: 2rem;
+  border: 3px solid #333;
+}
+.profile-details {
+  font-size: 1.4rem;
+  text-align: left;
+}
+.profile-details p {
+  margin: 0.75rem 0;
+  line-height: 1.6;
+}
+h2 {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  color: #333;
+  font-weight: 600;
+  text-align: center; /* Esto centrará el texto */
+}
+/* Estilos para la sección de subida de archivo */
+.upload-section {
+  margin-top: 1rem;
+}
+.upload-label {
+  font-size: 1.2rem;
+  font-weight: bold;
+  display: block; /* Asegura que esté en su propia línea */
+  margin-bottom: 0.5rem; /* Margen entre la etiqueta y el input */
+}
+#fileUpload {
+  display: block;
+  padding: 0.5rem;
+  font-size: 1rem;
+  cursor: pointer;
+}
+footer {
+  background-color: rgba(255, 182, 193, 0.9); /* Fondo semi-transparente */
+  text-align: center;
+  padding: 2rem 0;
+  color: black; /* Cambiado a negro */
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  margin-top: 200px;
+}
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 2rem; /* Espacio entre los botones */
+  margin-top: 2rem; /* Espacio sobre los botones */
+  margin-bottom: 200px;
+}
+.btn-edit,
+.btn-logout {
+  background-color: #ff69b4; /* Color de fondo rosa */
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.2rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.btn-edit:hover {
+  background-color: #ff1493; /* Color más oscuro al pasar el ratón */
+}
+.btn-logout:hover {
+  background-color: #ff1493; /* Color más oscuro al pasar el ratón */
+}
+.perfil-titulo {
+  font-family: "Bubblegum Sans", cursive; /* Cambiado a una fuente infantil */
+  color: #ff1493; /* Color rosa fuerte */
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5); /* Sombreado */
+  font-size: 2.5rem; /* Tamaño deseado */
+  margin-bottom: 2rem; /* Espacio inferior */
+  text-align: center; /* Centrar el texto */
+}

@@ -1,14 +1,14 @@
 const express = require("express");
 const morgan = require("morgan");
 const cors = require("cors");
-const router = require("../router/user.router");
+require("dotenv").config();
+const usersRouter = require("../router/user.router");
+const usersPostsRouter = require("../router/userPosts.router");
 
 const app = express();
 
-// parsear JSON
 app.use(express.json());
 
-// solicitudes frontend
 app.use(
   cors({
     origin: "http://localhost:3000",
@@ -21,6 +21,17 @@ app.get("/", (req, res) => {
   res.send("This is express");
 });
 
-app.use("/api/v1", router);
+// routers
+
+app.use("/api/v1", usersRouter);
+app.use("/api/v1/posts", usersPostsRouter);
+
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    ok: false,
+    message: "Ocurrió un error en el servidor",
+  });
+});
 
 module.exports = app;

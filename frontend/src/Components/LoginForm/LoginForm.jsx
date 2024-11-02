@@ -1,7 +1,10 @@
-/* TODO: BORRAR //TEST */
 import React, { useEffect, useState } from "react";
-import "./LoginForm.css";
+import Modal from "react-modal";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import "./LoginForm.css";
+
+Modal.setAppElement("#root");
 
 const LoginForm = () => {
   const [loginData, setLoginData] = useState({
@@ -17,6 +20,9 @@ const LoginForm = () => {
     RegContrasena: "",
     Genero: "1",
   });
+
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
 
   useEffect(() => {
     const btnIniciarSesion = document.getElementById("btn__iniciar-sesion");
@@ -97,6 +103,8 @@ const LoginForm = () => {
     };
   }, []);
 
+  const navigate = useNavigate(); // Crear el hook de navegación
+
   const handleLoginChange = (e) => {
     setLoginData({
       ...loginData,
@@ -114,12 +122,10 @@ const LoginForm = () => {
   const loginValidate = async (e) => {
     e.preventDefault();
     try {
-      //TEST
       console.log("Datos enviados", {
         email: loginData.LogUsuario,
         password: loginData.LogContrasena,
       });
-      //TEST
 
       const response = await axios.post("http://localhost:3001/api/v1/login", {
         email: loginData.LogUsuario,
@@ -127,40 +133,65 @@ const LoginForm = () => {
       });
 
       console.log(response.data);
-      alert("Inicio de sesion exitoso");
+      if (response.status == 200) {
+        console.log("login successfully");
+        localStorage.setItem("token", response.data.token);
+        console.log(response.data.token);
+        navigate("/UserProfile");
+      }
     } catch (error) {
       console.error("Error al iniciar sesión", error);
-      alert("Error al iniciar sesión, verifica tus credenciales");
+      alert("Las credenciales no son válidas");
     }
   };
 
   const registerValidate = async (e) => {
     e.preventDefault();
     try {
-      //TEST
       console.log("Datos enviados", {
         userName: registerData.RegUsuario,
-        fullName: registerData.RegNombre + " " + registerData.RegApellido,
+        firstName: registerData.RegNombre,
+        lastName: registerData.RegApellido,
+        // fullName: registerData.RegNombre + " " + registerData.RegApellido,
         email: registerData.RegCorreo,
         pass: registerData.RegContrasena,
         gender: registerData.Genero,
         userImage: null,
       });
-      //TEST
+
       const response = await axios.post("http://localhost:3001/api/v1/user", {
         userName: registerData.RegUsuario,
-        fullName: `${registerData.RegNombre} ${registerData.RegApellido}`,
+        firstName: registerData.RegNombre,
+        lastName: registerData.RegApellido,
+        // fullName: `${registerData.RegNombre} ${registerData.RegApellido}`,
         email: registerData.RegCorreo,
         pass: registerData.RegContrasena,
         gender: registerData.Genero,
         userImage: null,
       });
       console.log(response.data);
-      alert("Usuario registrado con exito");
+      alert("Usuario registrado con éxito");
+      localStorage.setItem("token", response.data.token);
+      navigate("/UserProfile");
     } catch (error) {
-      console.error("Error al registrar el usuario", error);
-      alert("Error al registrar, intenta de nuevo");
+      if (error.response && error.response.data.message) {
+        const errorMessage = error.response.data.message;
+
+        if (errorMessage === "Username already exists") {
+          alert("El nombre de usuario ya existe. Por favor, elige otro.");
+        } else if (errorMessage === "Email already exists") {
+          alert("El correo electrónico ya está registrado. Usa otro correo.");
+        } else {
+          alert("Ocurrió un error al registrar el usuario");
+        }
+      } else {
+        alert("Ocurrió un error al registrar el usuario");
+      }
     }
+  };
+
+  const closeModal = () => {
+    setModalIsOpen(false);
   };
 
   return (
@@ -182,7 +213,11 @@ const LoginForm = () => {
 
         <div className="contenedor__login-register">
           {/* Formulario de login */}
-          <form className="formulario__login" onSubmit={loginValidate}>
+          <form
+            id="loginFrm"
+            className="formulario__login"
+            onSubmit={loginValidate}
+          >
             <h2>Iniciar Sesión</h2>
             <input
               type="text"
@@ -243,7 +278,7 @@ const LoginForm = () => {
             <input
               type="password"
               required
-              placeholder="Contraseña mínimo 8 caracteres"
+              placeholder="Contraseña mínimo 6 caracteres"
               name="RegContrasena"
               value={registerData.RegContrasena}
               onChange={handleRegisterChange}
@@ -253,28 +288,28 @@ const LoginForm = () => {
               value={registerData.Genero}
               onChange={handleRegisterChange}
             >
-              <option value="1">Femenino</option>
-              <option value="2">Masculino</option>
+              <option value="1">Masculino</option>
+              <option value="2">Femenino</option>
             </select>
-
             <button type="submit" className="btn btn-primary">
-              Registrarse ahora
-            </button>
-          </form>
-
-          {/* Formulario de subir imagen */}
-          <form
-            className="formulario__register"
-            onSubmit={(e) => e.preventDefault()}
-          >
-            <h2>Selecciona tu imagen</h2>
-            <input type="file" name="foto" id="foto" />
-            <button type="submit" className="btn btn-primary">
-              Subir imagen
+              Registrarse
             </button>
           </form>
         </div>
       </div>
+
+      {/* Modal para mostrar mensajes */}
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        contentLabel="Mensaje"
+        className="modal"
+        overlayClassName="overlay"
+      >
+        <h2>Mensaje</h2>
+        <p>{modalMessage}</p>
+        <button onClick={closeModal}>Cerrar</button>
+      </Modal>
     </main>
   );
 };

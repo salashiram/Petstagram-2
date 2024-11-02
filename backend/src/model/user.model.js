@@ -18,7 +18,11 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    fullName: {
+    firstName: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    lastName: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -41,7 +45,7 @@ User.init(
       defaultValue: false,
     },
     userImage: {
-      type: DataTypes.BLOB,
+      type: DataTypes.STRING,
       allowNull: true,
     },
   },
