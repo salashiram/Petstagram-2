@@ -1,8 +1,5 @@
 const router = require("express").Router();
 const bcrypt = require("bcrypt");
-// const multer = require("multer");
-// const storage = multer.memoryStorage();
-// const upload = multer({ storage: storage });
 const jwt = require("jsonwebtoken");
 const authenticateToken = require("../midd/authMiddleware.middleware");
 const User = require("../model/user.model");
@@ -137,13 +134,13 @@ router.post("/user", async (req, res) => {
       user: newUser,
       token,
     });
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err);
     res.status(500).json({
       ok: false,
       status: 500,
       message: "Error creating user",
-      error: error.message,
+      error: err.message,
     });
   }
 });

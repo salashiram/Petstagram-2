@@ -1,35 +1,40 @@
 const router = require("express").Router();
+const cors = require("cors");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const UserPosts = require("../model/userPosts.model");
 const { response } = require("express");
 const { json } = require("sequelize");
+const authenticateToken = require("../midd/authMiddleware.middleware");
+const sequelize = require("../connection");
 
-// get all
-router.get("/userPost", async (req, res) => {
+// get all posts
+router.get("/userPost", authenticateToken, async (req, res) => {
   try {
-    const post = await UserPosts.findAll();
-    res.status(200).json({
-      ok: true,
-      status: 200,
-      body: post,
-    });
-    if (!post) {
-      return res.status(404).json({
+    const result = await sequelize.query("CALL spUserPosts();");
+
+    if (!result) {
+      res.status(409).json({
         ok: false,
-        message: "empty",
+        status: 409,
+        message: "Bad request",
       });
     }
+
+    res.json({
+      ok: true,
+      data: result,
+    });
   } catch (err) {
     console.error("Error", err);
     res.status(500).json({
       ok: false,
-      status: 500,
+      message: "Error fetching user data",
     });
   }
 });
 
-// get one
+// get one post
 router.get("/userPost/:idPost", async (req, res) => {
   try {
     const id = req.params.idPost;
@@ -61,44 +66,54 @@ router.get("/userPost/:idPost", async (req, res) => {
 });
 
 // post
-router.post("/userPost", async (req, res) => {
-  const { idUser, title, content, postImage, postLevel } = req.body;
+router.post(
+  "/userPost",
+  cors({
+    origin: "http://localhost:3000",
+    methods: ["POST"],
+  }),
+  authenticateToken,
+  async (req, res) => {
+    // const { idUser } = req.params;
+    const { title, content, postImage, postLevel } = req.body;
 
-  if (!idUser || !title || !content || !postLevel) {
-    return (
-      res.status(400),
-      json({
+    if (!title || !content || !postLevel) {
+      return (
+        res.status(400),
+        json({
+          ok: false,
+          message: "All fields are required",
+        })
+      );
+    }
+
+    try {
+      const idUserFromToken = req.idUser;
+      const newUserPost = await UserPosts.create({
+        idUser: idUserFromToken,
+        title,
+        content,
+        postImage,
+        postLevel,
+      });
+
+      res.status(201).json({
+        ok: true,
+        status: 201,
+        message: "Post created successfully",
+        userPost: newUserPost,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({
         ok: false,
-        message: "All fields are required",
-      })
-    );
+        status: 500,
+        message: "Error creating post",
+        error: err.message,
+      });
+    }
   }
-
-  try {
-    const newUserPost = await UserPosts.create({
-      idUser,
-      title,
-      content,
-      postImage,
-      postLevel,
-    });
-
-    res.status(201).json({
-      ok: true,
-      status: 201,
-      message: "Post created successfully",
-      userPost: newUserPost,
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      ok: false,
-      status: 500,
-      message: "Error creating post",
-      error: err.message,
-    });
-  }
-});
+);
 
 // udate post
 router.put("/userPost/:idPost", async (req, res) => {
@@ -188,5 +203,38 @@ router.put("/userPost/deactivate/:idPost", async (req, res) => {
     });
   }
 });
+
+// show posts
+router.get(
+  "/userPost/getposts/:idUser",
+  authenticateToken,
+  async (req, res) => {
+    try {
+      const id = req.params.idUser;
+      const result = await sequelize.query("CALL spUserFriends(:user_id);", {
+        replacements: { user_id: id },
+      });
+
+      if (!result) {
+        res.status(409).json({
+          ok: false,
+          status: 409,
+          message: "user posts empty",
+        });
+      }
+
+      res.json({
+        ok: true,
+        data: result,
+      });
+    } catch (err) {
+      console.error("Error", err);
+      res.status(500).json({
+        ok: false,
+        message: "Error fetching user data",
+      });
+    }
+  }
+);
 
 module.exports = router;

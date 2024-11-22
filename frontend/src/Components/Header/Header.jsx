@@ -19,6 +19,9 @@ const Header = () => {
           <li>
             <a href="/UserProfile">Perfil</a>
           </li>
+          <li>
+            <a href="/FriendRequests">Solicitudes de amistad</a>
+          </li>
         </ul>
       </nav>
     </header>

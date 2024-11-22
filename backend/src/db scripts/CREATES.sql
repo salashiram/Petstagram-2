@@ -12,7 +12,7 @@ CREATE TABLE User
     firstName VARCHAR(50) NOT NULL,
     lastName VARCHAR(50) NOT NULL,
     email VARCHAR(50) UNIQUE NOT NULL,
-    gender VARCHAR(20),
+    gender VARCHAR(20) NOT NULL,
     isActive BOOL NOT NULL DEFAULT TRUE,
     isAdmin BOOL NOT NULL DEFAULT FALSE,
     userImage VARCHAR(255),
@@ -21,8 +21,8 @@ CREATE TABLE User
 );
 
 
-DROP TABLE IF EXISTS userPassRecover;
-CREATE TABLE userPassRecover
+DROP TABLE IF EXISTS UserPassRecover;
+CREATE TABLE UserPassRecover
 (
 	idUserPassRecover INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     idUser INT,
@@ -33,8 +33,8 @@ CREATE TABLE userPassRecover
 );
 
  
-DROP TABLE IF EXISTS userPosts;
-CREATE TABLE userPosts(
+DROP TABLE IF EXISTS UserPosts;
+CREATE TABLE UserPosts(
 	idPost INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     idUser INT NOT NULL,
 	title VARCHAR(255),
@@ -47,8 +47,8 @@ CREATE TABLE userPosts(
 );
 
 
-DROP TABLE IF EXISTS userPostsReactions;
-CREATE TABLE Reactions
+DROP TABLE IF EXISTS UserPostsReactions;
+CREATE TABLE UserPostsReactions
 (
 	idReaction INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     idPost INT NOT NULL,
@@ -58,8 +58,8 @@ CREATE TABLE Reactions
 );
 
 
-DROP TABLE IF EXISTS userPostsComments;
-CREATE TABLE userPostsComments
+DROP TABLE IF EXISTS UserPostsComments;
+CREATE TABLE UserPostsComments
 (
 	idPostComment INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     idUser INT NOT NULL,
@@ -77,6 +77,7 @@ CREATE TABLE Friend
     idSender INT NOT NULL,
     idReceptor INT NOT NULL,
     isAccepted BOOLEAN DEFAULT 0,
+    isActive BOOLEAN DEFAULT 1,
 	createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -89,37 +90,16 @@ DROP TABLE IF EXISTS Product;
 CREATE TABLE Product
 (
 	idProduct INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    idCategory INT NOT NULL,
-    idDiscount INT,
+    idUser INT NOT NULL,
+    /*idCategory INT NOT NULL,--*/
+    category VARCHAR(50) NOT NULL,
+    discount DECIMAL(10,2),
     name VARCHAR(50) NOT NULL,
     description VARCHAR(255) NOT NULL,
     image VARCHAR(255),
     stock INT NOT NULL,
     isActive BOOL DEFAULT 1,
     unityPrice DECIMAL(10,2),
-	createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-DROP TABLE IF EXISTS Category;
-CREATE TABLE Category
-(
-	idCategory INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50) NOT NULL,
-    description VARCHAR(255),
-    isActive BOOL DEFAULT 1,
-	createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
-
-DROP TABLE IF EXISTS ProductDiscount;
-CREATE TABLE ProductDiscount
-(
-	idDiscount INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(50) NOT NULL,
-    description VARCHAR(255),
-    discountAmount DECIMAL(10,2) NOT NULL,
-    isActive BOOL DEFAULT 1,
 	createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
@@ -174,22 +154,22 @@ CREATE TABLE PurchaseOrderDetail
 
 /*	 CONSTRAINTS */
 
- ALTER TABLE userPosts
+ ALTER TABLE UserPosts
 	ADD CONSTRAINT fk_user_post FOREIGN KEY (idUser) REFERENCES User(idUser);
 
- ALTER TABLE Reactions
-	ADD CONSTRAINT fk_post_reaction FOREIGN KEY (idPost) REFERENCES userPosts(idPost);
+ ALTER TABLE UserPostsReactions
+	ADD CONSTRAINT fk_post_reaction FOREIGN KEY (idPost) REFERENCES UserPosts(idPost);
 
- ALTER TABLE Reactions
+ ALTER TABLE UserPostsReactions
 	ADD CONSTRAINT fk_user_reaction FOREIGN KEY (idUser) REFERENCES User(idUser);
 
-ALTER TABLE userPassRecover
+ALTER TABLE UserPassRecover
 	ADD CONSTRAINT fk_user_pass_recovery FOREIGN KEY (idUser) REFERENCES User(idUser);
 
-ALTER TABLE userPostsComments
-	ADD CONSTRAINT fk_post_comment FOREIGN KEY (idPost) REFERENCES userPosts(idPost);
+ALTER TABLE UserPostsComments
+	ADD CONSTRAINT fk_post_comment FOREIGN KEY (idPost) REFERENCES UserPosts(idPost);
     
-ALTER TABLE userPostsComments
+ALTER TABLE UserPostsComments
 	ADD CONSTRAINT fk_post_user_comment FOREIGN KEY (idUser) REFERENCES User(idUser);
  
 ALTER TABLE Friend
@@ -197,12 +177,6 @@ ALTER TABLE Friend
     
 ALTER TABLE Friend 
 	ADD CONSTRAINT fk_user_receptor_request FOREIGN KEY (idReceptor) REFERENCES User(idUser);
-
-ALTER TABLE Product
-	ADD CONSTRAINT fk_product_category FOREIGN KEY (idCategory) REFERENCES Category(idCategory);
-    
-ALTER TABLE Product
-	ADD CONSTRAINT fk_product_discount FOREIGN KEY (idDiscount) REFERENCES ProductDiscount(idDiscount);
         
 ALTER TABLE ShoppingCart
 	ADD CONSTRAINT fk_user_shopping_cart FOREIGN KEY (idUser) REFERENCES User(idUser);
@@ -212,14 +186,16 @@ ALTER TABLE ShoppingCartDetail
 
  ALTER TABLE PurchaseOrder
 	ADD CONSTRAINT fk_user_purchase_order FOREIGN KEY (idUser) REFERENCES User(idUser);
-    
+
 ALTER TABLE PurchaseOrderDetail
 	ADD CONSTRAINT fk_user_purchase_order_detail FOREIGN KEY(idPurchaseOrder) REFERENCES PurchaseOrder(idPurchaseOrder);
     
+ALTER TABLE Product
+	ADD CONSTRAINT fk_user_product FOREIGN KEY(idUser) REFERENCES User(idUser);
     
  
     /* DEFAULT ADMIN */
-    INSERT INTO User (userName,pass,firstName,lastName,email,isAdmin)
+    /*INSERT INTO User (userName,pass,firstName,lastName,email,isAdmin)
 		VALUES('admin123','$2b$10$OZqLxws/Rcc.ybu7kkGbduQrgJxzcRsBkH4uwE1erjjqSckvHIv1m','admin','admin','admin@petstagram.com',1);
-
+*/
  

@@ -7,6 +7,7 @@ const authenticateToken = (req, res, next) => {
   if (!token) {
     return res
       .status(401)
+      .set("Access-Control-Allow-Origin", "*") // Agrega encabezado CORS
       .json({ ok: false, message: "Access token required" });
   }
 
@@ -15,7 +16,10 @@ const authenticateToken = (req, res, next) => {
     req.idUser = decoded.id;
     next();
   } catch (error) {
-    return res.status(403).json({ ok: false, message: "Invalid token" });
+    return res
+      .status(403)
+      .set("Access-Control-Allow-Origin", "*") // Agrega encabezado CORS
+      .json({ ok: false, message: "Invalid token" });
   }
 };
 
