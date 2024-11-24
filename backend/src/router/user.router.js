@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const authenticateToken = require("../midd/authMiddleware.middleware");
 const User = require("../model/user.model");
 const { response } = require("express");
+const sequelize = require("../connection");
 
 router.get("/user", async (req, res) => {
   const user = await User.findAll();
@@ -14,17 +15,47 @@ router.get("/user", async (req, res) => {
   });
 });
 
-router.get("/user/:idUser", authenticateToken, async (req, res) => {
+router.get("/user/userInfo/:idUser", authenticateToken, async (req, res) => {
   try {
     const id = req.params.idUser;
+    const result = await sequelize.query(
+      "CALL spShowUserProfileInfo(:id_user)",
+      {
+        replacements: { id_user: id },
+      }
+    );
 
-    if (id !== req.idUser.toString()) {
-      return res.status(403).json({
+    console.log(result);
+
+    if (!result[0] || result[0].length === 0) {
+      return res.status(409).json({
         ok: false,
-        message: "Forbidden: Access to this user data is not allowed",
+        status: 409,
+        message: "No info to show",
       });
     }
 
+    const user = result[0][0];
+
+    console.log("User data found:", user);
+
+    res.status(200).json({
+      ok: true,
+      data: result,
+      message: "User found",
+    });
+  } catch (err) {
+    console.error("Error", err);
+    res.status(500).json({
+      ok: false,
+      message: "Error fetching user data",
+    });
+  }
+});
+
+router.get("/user/:idUser", authenticateToken, async (req, res) => {
+  try {
+    const id = req.params.idUser;
     const user = await User.findOne({
       where: { idUser: id },
     });
@@ -203,17 +234,10 @@ router.post("/login", async (req, res) => {
 //  UPDATE
 router.put("/user/:idUser", authenticateToken, async (req, res) => {
   const { idUser } = req.params;
-  const { userName, email, firstName, lastName, gender, imageProfile } =
+  const { userName, email, firstName, lastName, gender, about, imageProfile } =
     req.body;
 
   try {
-    if (idUser !== req.idUser.toString()) {
-      return res.status(403).json({
-        ok: false,
-        message: "Forbidden: Access to this user data is not allowed",
-      });
-    }
-
     const dataUser = {};
     if (userName) dataUser.userName = userName;
     if (firstName) dataUser.firstName = firstName;
@@ -221,6 +245,7 @@ router.put("/user/:idUser", authenticateToken, async (req, res) => {
     if (email) dataUser.email = email;
     if (gender) dataUser.gender = gender;
     if (imageProfile) dataUser.imageProfile = imageProfile;
+    if (about) dataUser.about = about;
 
     const updateUser = await User.update(dataUser, {
       where: {
@@ -303,6 +328,15 @@ router.delete("/user/:idUser", async (req, res) => {
       error: err,
     });
   }
+});
+
+router.post("revoke", authenticateToken, (req, res) => {
+  const token = req.token;
+  revokeToken(token);
+  res.json({
+    ok: true,
+    message: "Close session successfully",
+  });
 });
 
 module.exports = router;

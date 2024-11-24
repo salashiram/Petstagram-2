@@ -13,6 +13,7 @@ const EditProfile = () => {
     lastName: "",
     profileImage: "",
     gender: "",
+    about: "",
   });
   const [originalData, setOriginalData] = useState(userData);
   const [errorMessage, setErrorMessage] = useState("");
@@ -48,6 +49,7 @@ const EditProfile = () => {
               email: response.data.body.email,
               gender: response.data.body.gender,
               profileImage: response.data.body.userImage,
+              about: response.data.body.about,
             });
           } else {
             console.error("Error fetching user data:", response.data.message);
@@ -172,6 +174,17 @@ const EditProfile = () => {
               id="editEmail"
               name="email"
               value={userData.email}
+              onChange={handleChange}
+            />
+            <br />
+            <label htmlFor="editAbout">
+              <strong>Acerca de </strong>
+            </label>
+            <input
+              type="text"
+              id="editAbout"
+              name="about"
+              value={userData.about}
               onChange={handleChange}
             />
             <br />

@@ -95,3 +95,7 @@ h2 {
   background: url(../Assets/fondoPerfil2.jpg) no-repeat center center fixed; /* Añadir la imagen de fondo */
   background-size: cover; /* Escalar la imagen para que cubra toda la pantalla */
 }
+
+.img-container {
+  display: flex;
+}

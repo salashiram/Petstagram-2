@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import { Link } from "react-router-dom";
 import "./Post.css";
 
-const Post = ({ username, imageSrc, caption, initialLikes }) => {
+const Post = ({ user_id, username, imageSrc, caption, initialLikes }) => {
   const [likes, setLikes] = useState(
     Number.isInteger(initialLikes) ? initialLikes : 0
   );
@@ -10,8 +11,6 @@ const Post = ({ username, imageSrc, caption, initialLikes }) => {
   const handleLike = () => {
     setLikes((prevLikes) => prevLikes + 1);
     setShowHeart(true);
-
-    // Ocultar el corazón después de 1 segundo
     setTimeout(() => {
       setShowHeart(false);
     }, 700);
@@ -21,7 +20,13 @@ const Post = ({ username, imageSrc, caption, initialLikes }) => {
     <div className="post">
       <div className="user-info">
         <img src="https://via.placeholder.com/50" alt="Avatar" />
-        <span className="username">{username}</span>
+        <Link to={`/UserProfile2/${user_id}`} className="username">
+          {username}
+        </Link>
+        {/* <a href="/UserProfile2" className="username">
+          {username}
+        </a> */}
+        {/* <span className="username">{username}</span> */}
       </div>
       <div className="img-container" onClick={handleLike}>
         <img className="post-img" src={imageSrc} alt="Imagen de mascota" />

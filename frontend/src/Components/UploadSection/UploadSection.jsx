@@ -8,7 +8,6 @@ const UploadSection = () => {
   const [file, setFile] = useState(null);
   const [description, setDescription] = useState("");
   const [preview, setPreview] = useState([]);
-  // const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [posts, setPosts] = useState([]);
@@ -35,6 +34,7 @@ const UploadSection = () => {
 
         try {
           const response = await axios.get(
+            // http://localhost:3001/api/v1/posts/userPost/getPosts/${userId}
             `http://localhost:3001/api/v1/posts/userPost`,
             {
               headers: {
@@ -45,8 +45,8 @@ const UploadSection = () => {
           );
 
           if (response.data.ok) {
-            // Aquí cambiamos de response.data.posts a response.data.data
-            setPosts(response.data.data); // Acceder a los posts con response.data.data
+            setPosts(response.data.data);
+            console.log(response.data);
           } else {
             setError("No se pudieron cargar los posts.");
           }
@@ -69,7 +69,7 @@ const UploadSection = () => {
       if (token) {
         const decodedToken = jwtDecode(token);
         const userId = decodedToken.id;
-        const userName = decodedToken.firstName; // Suponiendo que el 'firstName' está en el token
+        const userName = decodedToken.firstName;
 
         const postPayload = {
           idUser: userId,
@@ -92,9 +92,8 @@ const UploadSection = () => {
           );
 
           if (response.data.ok) {
-            // Agregar el 'user_name' al nuevo post antes de añadirlo al estado
             const newPost = { ...response.data.post, user_name: userName };
-            setPosts([newPost, ...posts]); // Agregar el nuevo post al inicio de la lista
+            setPosts([newPost, ...posts]);
           } else {
             console.error("Error al crear el post:", response.data.message);
           }
@@ -136,14 +135,14 @@ const UploadSection = () => {
       />
       <button onClick={handleUpload}>Subir Foto</button>
 
-      {/* Renderizar los posts */}
       <div className="posts-container">
         {posts && posts.length > 0 ? (
           posts.map((post) => (
             <Post
               key={post.post_id}
-              username={post.user_name} // Aquí usas el 'user_name' que ya has añadido
-              imageSrc={post.user_profile_picture}
+              user_id={post.user_id}
+              username={post.user_name}
+              imageSrc={"https://cdn-icons-png.flaticon.com/512/34/34627.png"}
               caption={post.post_content}
               initialLikes={null}
             />

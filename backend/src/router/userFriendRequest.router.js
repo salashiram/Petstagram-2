@@ -80,10 +80,10 @@ router.get("/friendRequest", async (req, res) => {
 });
 
 // enviar solicitud de amistad
-router.post("/friendRequest", async (req, res) => {
+router.post("/friendRequest", authenticateToken, async (req, res) => {
   const { idSender, idReceptor } = req.body;
 
-  if (!idSender | !idReceptor) {
+  if (!idSender || !idReceptor) {
     res.status(400).json({
       ok: false,
       status: 400,

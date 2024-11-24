@@ -211,7 +211,7 @@ router.get(
   async (req, res) => {
     try {
       const id = req.params.idUser;
-      const result = await sequelize.query("CALL spUserFriends(:user_id);", {
+      const result = await sequelize.query("CALL spGetUserPosts(:user_id);", {
         replacements: { user_id: id },
       });
 

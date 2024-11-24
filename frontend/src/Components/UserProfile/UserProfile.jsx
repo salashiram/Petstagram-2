@@ -11,6 +11,7 @@ const ProfileInfo = () => {
     fullName: "",
     email: "",
     userImage: "",
+    about: "",
   });
 
   useEffect(() => {
@@ -34,7 +35,6 @@ const ProfileInfo = () => {
           if (response.data.ok) {
             let userFullName =
               response.data.body.firstName + " " + response.data.body.lastName;
-
             const userImageBlob = response.data.body.userImage;
 
             // Convertir el BLOB a URL
@@ -51,8 +51,10 @@ const ProfileInfo = () => {
               fullName: userFullName,
               email: response.data.body.email,
               userImage: imageUrl,
+              about: response.data.body.about,
             });
           } else {
+            console.log(response.data.body);
             console.error("Error fetching user data:", response.data.message);
           }
         } catch (error) {
@@ -77,22 +79,25 @@ const ProfileInfo = () => {
     <div className="profile-container">
       <Header />
       <section className="profile">
-        <h2 className="perfil-titulo">PERFIL USUARIO</h2>
+        <h2 className="perfil-titulo">{userData.fullName}</h2>
         <div className="profile-info">
-          <img
-            src={userData.userImage}
-            alt="Profile avatar"
-            className="profile-avatar"
-          />
+          <div className="img-container">
+            <img
+              src={userData.userImage}
+              alt="Profile avatar"
+              className="profile-avatar"
+            />
+          </div>
+
           <div className="profile-details">
             <p>
-              <strong>Nombre de Usuario:</strong> {userData.userName}
+              <strong>{userData.userName}</strong>
             </p>
             <p>
-              <strong>Correo electrónico:</strong> {userData.email}
+              <strong>{userData.email}</strong>
             </p>
             <p>
-              <strong>Nombre completo:</strong> {userData.fullName}
+              <strong>Acerca de:</strong> <br /> <p>{userData.about}</p>
             </p>
           </div>
         </div>

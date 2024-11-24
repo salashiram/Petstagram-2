@@ -11,12 +11,6 @@ const Inicio = () => {
       <Header />
       <main>
         <UploadSection />
-        {/* <Post
-          username="UsuarioMascota"
-          imageSrc={} // Usar la imagen importada
-          caption="Gato coqueto :p ."
-          initialLikes={0} // Asegúrate de que sea un número aquí
-        /> */}
       </main>
       <Footer />
     </div>

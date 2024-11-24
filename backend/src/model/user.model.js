@@ -34,6 +34,10 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
+    about: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
     isActive: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
