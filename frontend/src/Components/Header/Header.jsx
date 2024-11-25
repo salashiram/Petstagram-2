@@ -34,7 +34,7 @@ const Header = () => {
         </ul>
         <ul className="menu-right">
           <li>
-            <a href="/explorar">Explorar</a>
+            <a href="/Explorar">Explorar</a>
           </li>
           <li>
             <a href="/ShoppingCart">

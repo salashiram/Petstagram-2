@@ -163,3 +163,13 @@ footer {
   margin-bottom: 2rem; /* Espacio inferior */
   text-align: center; /* Centrar el texto */
 }
+
+#editEmail {
+  margin-bottom: 1.5rem;
+  text-align: left;
+  width: 100%;
+  padding: 0.5rem;
+  border: 2px solid #ff1493;
+  border-radius: 5px;
+  font-size: 1rem;
+}

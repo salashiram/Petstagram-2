@@ -19,7 +19,10 @@ const Post = ({ user_id, username, imageSrc, caption, initialLikes }) => {
   return (
     <div className="post">
       <div className="user-info">
-        <img src="https://via.placeholder.com/50" alt="Avatar" />
+        <img
+          src="https://images.pexels.com/photos/56733/pexels-photo-56733.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+          alt="Avatar"
+        />
         <Link to={`/UserProfile2/${user_id}`} className="username">
           {username}
         </Link>

@@ -84,7 +84,10 @@ const FriendRequests = () => {
           <section className="users">
             <div className="header-user-fr">
               <div className="content">
-                <img src="../Assets/ejemplo4.jpg" alt="Admin Icon" />
+                <img
+                  src="https://images.pexels.com/photos/1677533/pexels-photo-1677533.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+                  alt="Admin Icon"
+                />
                 <div className="details">
                   <span>Mis solicitudes de amistad</span>
                 </div>
@@ -96,7 +99,9 @@ const FriendRequests = () => {
                 <a className="users-details" key={user.friend_request}>
                   <div className="details">
                     <img
-                      src={user.user_profile_image}
+                      src={
+                        "https://cdn-icons-png.flaticon.com/512/34/34627.png"
+                      }
                       alt={`${user.user_profile_image} icon`}
                     />
                     <span className="nickname">{user.username}</span>

@@ -44,22 +44,28 @@ router.get("/product/deactivate/:idProduct", async (req, res) => {
 
 // create product
 router.post("/product", authenticateToken, async (req, res) => {
-  const { category, discount, name, description, image, stock, unityPrice } =
-    req.body;
+  const {
+    idUser,
+    category,
+    discount,
+    name,
+    description,
+    image,
+    stock,
+    unityPrice,
+  } = req.body;
 
-  if (!category || !name || !description || !stock || !unityPrice) {
-    return (
-      res.status(400),
-      json({
-        ok: false,
-        message: "All fields are required",
-      })
-    );
+  if (!idUser || !category || !name || !description || !stock || !unityPrice) {
+    return res.status(400).json({
+      ok: false,
+      message: "All fields are required",
+    });
   }
+
   try {
-    const idUserFromToken = req.idUser;
+    // const idUserFromToken = req.idUser;
     const newProduct = await Product.create({
-      idUser: idUserFromToken,
+      idUser,
       category,
       discount,
       name,

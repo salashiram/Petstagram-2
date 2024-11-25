@@ -6,7 +6,7 @@ const User = require("../model/user.model");
 const { response } = require("express");
 const sequelize = require("../connection");
 
-router.get("/user", async (req, res) => {
+router.get("/user", authenticateToken, async (req, res) => {
   const user = await User.findAll();
   res.status(200).json({
     ok: true,

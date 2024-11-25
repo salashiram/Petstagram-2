@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
+import EditarPremios from "../EditarPremios/EditarPremios";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import "./UserProfile.css";
@@ -83,7 +84,9 @@ const ProfileInfo = () => {
         <div className="profile-info">
           <div className="img-container">
             <img
-              src={userData.userImage}
+              src={
+                "https://images.pexels.com/photos/1805164/pexels-photo-1805164.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+              }
               alt="Profile avatar"
               className="profile-avatar"
             />
@@ -97,13 +100,17 @@ const ProfileInfo = () => {
               <strong>{userData.email}</strong>
             </p>
             <p>
-              <strong>Acerca de:</strong> <br /> <p>{userData.about}</p>
+              <strong>Acerca de:</strong> <br />{" "}
+              <p>
+                <strong>{userData.about}</strong>
+              </p>
             </p>
           </div>
         </div>
         <div className="buttonsContainer">
           <div className="buttonsContent">
             <a href="/EditProfile">Editar perfil</a>
+            <a href="/EditarPremios">Productos</a>
           </div>
         </div>
       </section>

@@ -142,7 +142,9 @@ const UploadSection = () => {
               key={post.post_id}
               user_id={post.user_id}
               username={post.user_name}
-              imageSrc={"https://cdn-icons-png.flaticon.com/512/34/34627.png"}
+              imageSrc={
+                "https://images.pexels.com/photos/1741205/pexels-photo-1741205.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+              }
               caption={post.post_content}
               initialLikes={null}
             />

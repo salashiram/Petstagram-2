@@ -80,6 +80,9 @@ h2 {
 .buttonsContent {
   text-align: center;
 }
+.buttonsContent a {
+  margin-right: 20px;
+}
 
 .buttonsContainer a {
   width: 400px;

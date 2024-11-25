@@ -1,4 +1,6 @@
 .post {
+  width: 50%;
+  height: auto;
   background-color: rgba(255, 255, 255, 0.9);
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -25,6 +27,7 @@
 }
 
 .img-container {
+  width: 100%;
   position: relative;
   cursor: pointer; /* Cambiar cursor para indicar que es clickeable */
 }

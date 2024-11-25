@@ -8,6 +8,8 @@ import EditProfile from "./Components/EditarPerfil/EditarPerfil";
 import FriendRequests from "./Components/SolicitudesAmistad/FriendRequests";
 import UserProfile2 from "./Components/UserProfile2/UserProfile2";
 import ShoppingCart from "./Components/ShoppingCart/ShoppingCart";
+import EditarPremios from "./Components/EditarPremios/EditarPremios";
+import Explorar from "./Components/Explorar/Explorar";
 
 const App = () => {
   return (
@@ -22,6 +24,8 @@ const App = () => {
         <Route path="/FriendRequests" element={<FriendRequests />} />
         <Route path="/UserProfile2/:id" element={<UserProfile2 />} />
         <Route path="/ShoppingCart" element={<ShoppingCart />} />
+        <Route path="/EditarPremios" element={<EditarPremios />} />
+        <Route path="/Explorar" element={<Explorar />} />
       </Routes>
     </Router>
   );

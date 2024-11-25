@@ -141,7 +141,9 @@ const ProfileInfo = () => {
         <h2 className="perfil-titulo">{userData.fullName}</h2>
         <div className="profile-info">
           <img
-            src={userData.userImage}
+            src={
+              "https://images.pexels.com/photos/551628/pexels-photo-551628.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+            }
             alt="Profile avatar"
             className="profile-avatar"
           />

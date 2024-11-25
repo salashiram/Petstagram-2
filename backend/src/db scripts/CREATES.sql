@@ -13,6 +13,7 @@ CREATE TABLE User
     lastName VARCHAR(50) NOT NULL,
     email VARCHAR(50) UNIQUE NOT NULL,
     gender VARCHAR(20) NOT NULL,
+    about TEXT,
     isActive BOOL NOT NULL DEFAULT TRUE,
     isAdmin BOOL NOT NULL DEFAULT FALSE,
     userImage VARCHAR(255),
@@ -110,12 +111,14 @@ CREATE TABLE ShoppingCart
 (
 	idShoppingCart INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     idUser INT NOT NULL,
+    idProduct INT NOT NULL,
+        isActive BOOLEAN DEFAULT 1,
 	createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
 
-DROP TABLE IF EXISTS ShoppingCartDetail;
+/*DROP TABLE IF EXISTS ShoppingCartDetail;
 CREATE TABLE ShoppingCartDetail
 (
 	idShoppingCartDetail INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -136,10 +139,10 @@ DROP TABLE IF EXISTS PurchaseOrder;
     total DECIMAL(10,2) NOT NULL,
 	createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
- );
+ );*/
  
  
-DROP TABLE IF EXISTS PurchaseOrderDetail;
+/*DROP TABLE IF EXISTS PurchaseOrderDetail;
 CREATE TABLE PurchaseOrderDetail
 (
 	idPurchaseOrderDetail INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -149,7 +152,7 @@ CREATE TABLE PurchaseOrderDetail
     productPrice DECIMAL(10,2) NOT NULL,
 	createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-);
+);*/
 
 
 /*	 CONSTRAINTS */
@@ -181,14 +184,14 @@ ALTER TABLE Friend
 ALTER TABLE ShoppingCart
 	ADD CONSTRAINT fk_user_shopping_cart FOREIGN KEY (idUser) REFERENCES User(idUser);
     
-ALTER TABLE ShoppingCartDetail
-	ADD CONSTRAINT fk_user_shopping_cart_detail FOREIGN KEY (idShoppingCart) REFERENCES ShoppingCart(idShoppingCart);
+/*ALTER TABLE ShoppingCartDetail
+	ADD CONSTRAINT fk_user_shopping_cart_detail FOREIGN KEY (idShoppingCart) REFERENCES ShoppingCart(idShoppingCart);*/
 
- ALTER TABLE PurchaseOrder
-	ADD CONSTRAINT fk_user_purchase_order FOREIGN KEY (idUser) REFERENCES User(idUser);
+ /*ALTER TABLE PurchaseOrder
+	ADD CONSTRAINT fk_user_purchase_order FOREIGN KEY (idUser) REFERENCES User(idUser);*/
 
-ALTER TABLE PurchaseOrderDetail
-	ADD CONSTRAINT fk_user_purchase_order_detail FOREIGN KEY(idPurchaseOrder) REFERENCES PurchaseOrder(idPurchaseOrder);
+/*ALTER TABLE PurchaseOrderDetail
+	ADD CONSTRAINT fk_user_purchase_order_detail FOREIGN KEY(idPurchaseOrder) REFERENCES PurchaseOrder(idPurchaseOrder);*/
     
 ALTER TABLE Product
 	ADD CONSTRAINT fk_user_product FOREIGN KEY(idUser) REFERENCES User(idUser);

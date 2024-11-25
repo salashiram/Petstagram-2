@@ -27,8 +27,15 @@
   margin-bottom: 1rem;
 }
 
+.products-container {
+  display: flex;
+  flex-direction: column;
+}
+
 .productos-semana {
-  text-align: left;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
 }
 
 .productos-titulo {
