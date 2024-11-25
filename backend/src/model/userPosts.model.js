@@ -27,7 +27,7 @@ UserPosts.init(
       type: DataTypes.TEXT,
     },
     postImage: {
-      type: DataTypes.STRING,
+      type: DataTypes.BLOB("long"),
       allowNull: true,
     },
     postLevel: {

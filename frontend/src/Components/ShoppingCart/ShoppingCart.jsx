@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "./ShoppingCart.css";
 import { jwtDecode } from "jwt-decode";
 
@@ -9,6 +10,10 @@ const Carrito = () => {
   const [productos, setProductos] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [payMethod, setPayMethod] = useState(""); // Estado para el método de pago
+  const [userAddress, setUserAddress] = useState(""); // Estado para la dirección
+  const [total, setTotal] = useState(0); // Estado para el total
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -27,6 +32,7 @@ const Carrito = () => {
         )
         .then((response) => {
           setProductos(response.data.body);
+          setTotal(calcularTotal()); // Establecer el total cuando se cargan los productos
         })
         .catch((err) => {
           console.error("Error al obtener el carrito:", err);
@@ -48,19 +54,41 @@ const Carrito = () => {
     );
   };
 
-  const eliminarProducto = (id) => {
-    setProductos((prevProductos) =>
-      prevProductos.filter((producto) => producto.idProduct !== id)
-    );
+  const deleteCart = (idShoppingCart) => {
+    const token = localStorage.getItem("token");
+
+    axios
+      .put(
+        `http://localhost:3001/api/v1/cart/shoppingCart/${idShoppingCart}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((response) => {
+        console.log("Carrito desactivado:", response.data);
+        setProductos((prevProductos) =>
+          prevProductos.filter(
+            (producto) => producto.idShoppingCart !== idShoppingCart
+          )
+        );
+        navigate("/Recompensas");
+      })
+      .catch((err) => {
+        console.error("Error al desactivar el carrito:", err);
+        setError("Hubo un problema al desactivar el carrito.");
+      });
   };
 
-  // Función para calcular el subtotal con verificación de tipo de datos
   const calcularSubtotal = (precio, cantidad) => {
     const precioNum = parseFloat(precio);
     const cantidadNum = parseInt(cantidad, 10);
 
     if (isNaN(precioNum) || isNaN(cantidadNum)) {
-      return 0; // Devolver 0 si el precio o cantidad no son números válidos
+      return 0;
     }
 
     return precioNum * cantidadNum;
@@ -70,12 +98,41 @@ const Carrito = () => {
     productos.reduce(
       (total, producto) =>
         total +
-        calcularSubtotal(
-          producto.product.unityPrice, // UnityPrice puede ser string, convertirlo a número
-          producto.quantity
-        ),
+        calcularSubtotal(producto.product.unityPrice, producto.quantity),
       0
     );
+
+  const handleCheckout = () => {
+    // Aquí puedes hacer la solicitud para finalizar la compra
+    const token = localStorage.getItem("token");
+    const idUser = jwtDecode(token).id;
+
+    axios
+      .post(
+        `http://localhost:3001/api/v1/cart/checkout`,
+        {
+          payMethod,
+          userAddress,
+          total,
+          idUser,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((response) => {
+        console.log("Compra realizada:", response.data);
+        // Redirigir a una página de confirmación
+        navigate("/confirmacion");
+      })
+      .catch((err) => {
+        console.error("Error al procesar el pago:", err);
+        setError("Hubo un problema al procesar el pago.");
+      });
+  };
 
   return (
     <div className="shopping-cart">
@@ -84,7 +141,6 @@ const Carrito = () => {
         <section className="shopping-cart-cart">
           <h2>Tu Carrito</h2>
 
-          {/* Muestra el mensaje de carga o error */}
           {loading && <p>Cargando tu carrito...</p>}
           {error && <p className="error">{error}</p>}
 
@@ -104,8 +160,7 @@ const Carrito = () => {
                   <tr key={producto.idProduct}>
                     <td>{producto.product.name}</td>
                     <td>
-                      ${parseFloat(producto.product.unityPrice).toFixed(2)}{" "}
-                      {/* Convertir a número */}
+                      ${parseFloat(producto.product.unityPrice).toFixed(2)}
                     </td>
                     <td>
                       <input
@@ -129,9 +184,9 @@ const Carrito = () => {
                     </td>
                     <td>
                       <button
-                        onClick={() => eliminarProducto(producto.idProduct)}
+                        onClick={() => deleteCart(producto.idShoppingCart)}
                       >
-                        Eliminar
+                        Eliminar artículo
                       </button>
                     </td>
                   </tr>
@@ -148,12 +203,45 @@ const Carrito = () => {
             <p>
               Total: $<span>{calcularTotal().toFixed(2)}</span>
             </p>
-            <button
-              className="shopping-cart-checkout"
-              disabled={productos.length === 0}
-            >
-              Proceder al Pago
-            </button>
+
+            {/* Inputs para la información adicional */}
+            <div className="checkout-inputs">
+              <div className="payment-inputs">
+                <label htmlFor="payMethod">Método de pago</label>
+                <select
+                  id="payMethod"
+                  value={payMethod}
+                  onChange={(e) => setPayMethod(e.target.value)}
+                >
+                  <option value="">Selecciona un método de pago</option>
+                  <option value="tarjeta">Tarjeta de crédito</option>
+                  <option value="paypal">PayPal</option>
+                  <option value="transferencia">Transferencia bancaria</option>
+                  <option value="efectivo">Efectivo</option>
+                </select>
+              </div>
+
+              <div>
+                <label htmlFor="userAddress">Dirección de envío</label>
+                <input
+                  type="text"
+                  id="userAddress"
+                  value={userAddress}
+                  onChange={(e) => setUserAddress(e.target.value)}
+                  placeholder="Ingresa tu dirección"
+                />
+              </div>
+            </div>
+
+            <div className="cart-buttons">
+              <button
+                className="shopping-cart-checkout"
+                disabled={productos.length === 0 || !payMethod || !userAddress}
+                onClick={handleCheckout} // Llamada para proceder con el pago
+              >
+                Pagar
+              </button>
+            </div>
           </div>
         </section>
       </main>

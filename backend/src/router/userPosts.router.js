@@ -74,29 +74,45 @@ router.post(
   }),
   authenticateToken,
   async (req, res) => {
-    // const { idUser } = req.params;
     const { title, content, postImage, postLevel } = req.body;
 
+    // Validación de campos requeridos
     if (!title || !content || !postLevel) {
-      return (
-        res.status(400),
-        json({
-          ok: false,
-          message: "All fields are required",
-        })
-      );
+      return res.status(400).json({
+        ok: false,
+        message: "All fields are required",
+      });
     }
 
+    let bufferImg = null;
+
     try {
+      // Procesa la imagen solo si existe y está en formato Base64
+      if (postImage) {
+        if (postImage.startsWith("data:image")) {
+          const base64Data = postImage.split(",")[1];
+          bufferImg = Buffer.from(base64Data, "base64");
+        } else {
+          return res.status(400).json({
+            ok: false,
+            message: "Invalid image format. Expected Base64 with data URI.",
+          });
+        }
+      }
+
+      // Obtén el ID del usuario del token
       const idUserFromToken = req.idUser;
+
+      // Crea el nuevo post
       const newUserPost = await UserPosts.create({
         idUser: idUserFromToken,
         title,
         content,
-        postImage,
+        postImage: bufferImg,
         postLevel,
       });
 
+      // Responde con éxito
       res.status(201).json({
         ok: true,
         status: 201,

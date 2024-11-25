@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import "./EditarPerfil.css";
 
@@ -17,6 +18,7 @@ const EditProfile = () => {
   });
   const [originalData, setOriginalData] = useState(userData);
   const [errorMessage, setErrorMessage] = useState("");
+  const navigate = useNavigate();
 
   // const saveChanges = () => {};
 
@@ -81,6 +83,7 @@ const EditProfile = () => {
           ...prevData,
           profileImage: reader.result,
         }));
+        console.log("Imagen en base64:", reader.result);
       };
       reader.readAsDataURL(file);
     }
@@ -90,39 +93,37 @@ const EditProfile = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
 
-    const updatedData = {};
-    Object.keys(userData).forEach((key) => {
-      if (userData[key] !== originalData[key]) {
-        updatedData[key] = userData[key];
-      }
-    });
+    const updatedData = { ...userData };
 
-    if (Object.keys(updatedData).length > 0) {
-      const token = localStorage.getItem("token");
-      if (token) {
-        const decodedToken = jwtDecode(token);
-        const userId = decodedToken.id;
-        try {
-          const response = await axios.put(
-            `http://localhost:3001/api/v1/user/${userId}`,
-            updatedData,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          console.log("Usuario actualizado:", response.data);
-          alert("Actualización exitosa");
-        } catch (error) {
-          console.error("Error al actualizar usuario", error);
-          alert("Ocurrió un error al actualizar los datos");
-        }
-      } else {
-        // NO HAY TOKEN
+    // Asegúrate de enviar los datos binarios (Base64) de la imagen si han cambiado
+    if (userData.profileImage === originalData.profileImage) {
+      delete updatedData.profileImage; // No enviar si no ha cambiado
+    }
+
+    const token = localStorage.getItem("token");
+    if (token) {
+      const decodedToken = jwtDecode(token);
+      const userId = decodedToken.id;
+      try {
+        const response = await axios.put(
+          `http://localhost:3001/api/v1/user/${userId}`,
+          updatedData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log("Datos enviados al backend:", updatedData);
+        console.log("Usuario actualizado:", response.data);
+        alert("Actualización exitosa");
+        navigate("/UserProfile");
+      } catch (error) {
+        console.error("Error al actualizar usuario", error);
+        alert("Ocurrió un error al actualizar los datos");
       }
     } else {
-      alert("No hay cambios para actualizar");
+      alert("No estás autenticado");
     }
   };
 

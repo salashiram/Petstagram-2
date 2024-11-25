@@ -234,7 +234,7 @@ router.post("/login", async (req, res) => {
 //  UPDATE
 router.put("/user/:idUser", authenticateToken, async (req, res) => {
   const { idUser } = req.params;
-  const { userName, email, firstName, lastName, gender, about, imageProfile } =
+  const { userName, email, firstName, lastName, gender, about, profileImage } =
     req.body;
 
   try {
@@ -244,34 +244,38 @@ router.put("/user/:idUser", authenticateToken, async (req, res) => {
     if (lastName) dataUser.lastName = lastName;
     if (email) dataUser.email = email;
     if (gender) dataUser.gender = gender;
-    if (imageProfile) dataUser.imageProfile = imageProfile;
     if (about) dataUser.about = about;
 
+    // Procesar y asignar la imagen si existe
+
+    // if (profileImage) {
+    //   dataUser.profileImage = Buffer.from(profileImage, "base64");
+    // }
+
+    if (profileImage) {
+      dataUser.profileImage = Buffer.from(profileImage.split(",")[1], "base64");
+    }
+    console.log("Datos recibidos en el backend:", req.body);
+
     const updateUser = await User.update(dataUser, {
-      where: {
-        idUser: idUser,
-      },
+      where: { idUser },
     });
 
     if (updateUser[0] === 0) {
-      console.log(idUser);
       return res.status(404).json({
         ok: false,
         message: "User not found",
-        idUser,
       });
     }
 
     res.status(200).json({
       ok: true,
-      status: 200,
       message: "User updated successfully",
     });
   } catch (error) {
     console.error("Error updating user:", error);
     res.status(500).json({
       ok: false,
-      status: 500,
       message: "Error updating user",
     });
   }

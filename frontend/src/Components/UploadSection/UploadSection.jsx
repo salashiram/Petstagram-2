@@ -12,11 +12,24 @@ const UploadSection = () => {
   const [error, setError] = useState(null);
   const [posts, setPosts] = useState([]);
 
+  // const handleFileChange = (e) => {
+  //   const selectedFile = e.target.files[0];
+  //   if (selectedFile) {
+  //     setFile(selectedFile);
+  //     console.log("Nombre del archivo:", selectedFile.name);
+  //   }
+  // };
+
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     if (selectedFile) {
-      setFile(selectedFile);
-      console.log("Nombre del archivo:", selectedFile.name);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        // La imagen convertida a base64 está en reader.result
+        setFile(reader.result);
+        console.log("Imagen en base64:", reader.result);
+      };
+      reader.readAsDataURL(selectedFile); // Convierte la imagen a base64
     }
   };
 
@@ -34,7 +47,6 @@ const UploadSection = () => {
 
         try {
           const response = await axios.get(
-            // http://localhost:3001/api/v1/posts/userPost/getPosts/${userId}
             `http://localhost:3001/api/v1/posts/userPost`,
             {
               headers: {
@@ -45,8 +57,24 @@ const UploadSection = () => {
           );
 
           if (response.data.ok) {
-            setPosts(response.data.data);
-            console.log(response.data);
+            // Procesar cada post para agregar la URL generada
+            const processedPosts = response.data.data.map((post) => {
+              const postImageBuffer = post.post_image;
+              const imageUrl = postImageBuffer?.data
+                ? URL.createObjectURL(
+                    new Blob([new Uint8Array(postImageBuffer.data)], {
+                      type: "image/jpeg",
+                    })
+                  )
+                : null;
+
+              return {
+                ...post,
+                imageUrl, // Agregar la URL generada al post
+              };
+            });
+
+            setPosts(processedPosts);
           } else {
             setError("No se pudieron cargar los posts.");
           }
@@ -71,13 +99,17 @@ const UploadSection = () => {
         const userId = decodedToken.id;
         const userName = decodedToken.firstName;
 
+        const postLevel = document.getElementById("postLevel").value;
+
         const postPayload = {
           idUser: userId,
           title: "untitled",
           content: description,
-          postImage: file.name,
-          postLevel: document.getElementById("postLevel").value,
+          postImage: file, // Aquí `file` es la imagen en formato base64
+          postLevel,
         };
+
+        console.log("Post Payload enviado al backend:", postPayload);
 
         try {
           const response = await axios.post(
@@ -142,9 +174,10 @@ const UploadSection = () => {
               key={post.post_id}
               user_id={post.user_id}
               username={post.user_name}
-              imageSrc={
-                "https://images.pexels.com/photos/1741205/pexels-photo-1741205.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
-              }
+              // imageSrc={
+              //   "https://images.pexels.com/photos/1741205/pexels-photo-1741205.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+              // }
+              imageSrc={post.imageUrl}
               caption={post.post_content}
               initialLikes={null}
             />

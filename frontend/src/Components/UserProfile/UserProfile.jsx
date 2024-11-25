@@ -15,6 +15,16 @@ const ProfileInfo = () => {
     about: "",
   });
 
+  function _arrayBufferToBase64(buffer) {
+    var binary = "";
+    var bytes = new Uint8Array(buffer);
+    var len = bytes.byteLength;
+    for (var i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return window.btoa(binary);
+  }
+
   useEffect(() => {
     const fetchUserData = async () => {
       const token = localStorage.getItem("token");
@@ -33,25 +43,32 @@ const ProfileInfo = () => {
             }
           );
 
-          if (response.data.ok) {
-            let userFullName =
-              response.data.body.firstName + " " + response.data.body.lastName;
-            const userImageBlob = response.data.body.userImage;
+          console.log("Response data:", response.data);
 
-            // Convertir el BLOB a URL
-            const imageUrl = userImageBlob?.data
+          if (response.data.ok) {
+            const userFullName =
+              response.data.body.firstName + " " + response.data.body.lastName;
+
+            const profileImageBuffer = response.data.body.profileImage;
+
+            // Generar Blob y URL temporal
+            const imageUrl = profileImageBuffer?.data
               ? URL.createObjectURL(
-                  new Blob([new Uint8Array(userImageBlob.data)])
+                  new Blob([new Uint8Array(profileImageBuffer.data)], {
+                    type: "image/jpeg",
+                  })
                 )
               : null;
 
-            console.log(userImageBlob);
-            console.log("User Image URL:", imageUrl);
+            let imgTest = _arrayBufferToBase64(profileImageBuffer.data);
+
+            console.log("Generated Blob URL:", imageUrl);
+
             setUserData({
               userName: response.data.body.userName,
               fullName: userFullName,
               email: response.data.body.email,
-              userImage: imageUrl,
+              userImage: imageUrl, // Usar la URL del Blob
               about: response.data.body.about,
             });
           } else {
@@ -67,9 +84,9 @@ const ProfileInfo = () => {
     };
 
     fetchUserData();
-    // Limpieza del efecto
+
     return () => {
-      // Revoca la URL blob cuando el componente se desmonte
+      // Limpieza del efecto
       if (userData.userImage) {
         URL.revokeObjectURL(userData.userImage);
       }
@@ -82,9 +99,19 @@ const ProfileInfo = () => {
       <section className="profile">
         <h2 className="perfil-titulo">{userData.fullName}</h2>
         <div className="profile-info">
+          {/* <div className="img-container">
+            <img
+              src={
+                "https://images.pexels.com/photos/1805164/pexels-photo-1805164.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
+              }
+              alt="Profile avatar"
+              className="profile-avatar"
+            />
+          </div> */}
           <div className="img-container">
             <img
               src={
+                userData.userImage ||
                 "https://images.pexels.com/photos/1805164/pexels-photo-1805164.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
               }
               alt="Profile avatar"

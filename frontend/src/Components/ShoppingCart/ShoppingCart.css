@@ -75,3 +75,14 @@
   font-size: 1.2em;
   margin-top: 10px;
 }
+
+.cart-buttons button {
+  margin-right: 20px;
+}
+
+.payment-inputs select {
+  outline: #ff85c2;
+  padding: 10px;
+  width: 100%;
+  display: flex;
+}

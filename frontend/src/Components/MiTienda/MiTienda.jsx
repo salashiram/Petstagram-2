@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Contador from "../Contador/Contador";
+import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import ProductoItem from "../ProductoItem/ProductoItem";
 import "./MiTienda.css";
@@ -9,6 +10,7 @@ import exampleImage from "../MiTienda/61KSTdBcfDL.jpg";
 function MiTienda() {
   const [productos, setProductos] = useState([]);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProductos = async () => {
@@ -53,6 +55,7 @@ function MiTienda() {
         if (response.data.ok) {
           alert("Producto agregado al carrito");
           console.log("Respuesta del servidor:", response.data);
+          navigate("/ShoppingCart");
         } else {
           console.error(
             "Error al crear el carrito de compras:",
@@ -60,6 +63,7 @@ function MiTienda() {
           );
         }
       } catch (err) {
+        navigate("/ShoppingCart");
         console.log("id usuario", idUser);
         console.log("id producto", idProduct);
         console.error("Error al agregar al carrito:", err);

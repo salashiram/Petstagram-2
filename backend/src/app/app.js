@@ -14,6 +14,12 @@ const shoppingCartRouter = require("../router/shoppingCart.router");
 // const shoppingCartDetailRouter = require("../router/shoppingCartDetail.router");
 const app = express();
 
+// // Asegúrate de eliminar el prefijo "data:image/jpeg;base64,"
+// const base64Data = profileImage.replace(/^data:image\/jpeg;base64,/, "");
+
+// // Convertir base64 a buffer
+// const imageBuffer = Buffer.from(base64Data, "base64");
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, path.join(__dirname, "uploads"));

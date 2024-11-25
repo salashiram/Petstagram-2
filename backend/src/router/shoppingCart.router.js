@@ -65,7 +65,39 @@ router.get(
 );
 
 // deactivate shopping cart
-router.put("/shoppingCart", authenticateToken, async (req, res) => {});
+router.put(
+  "/shoppingCart/:idShoppingCart",
+  authenticateToken,
+  async (req, res) => {
+    try {
+      const idShoppingCart = req.params.idShoppingCart;
+      const updateShoppingCart = await ShoppingCart.update(
+        {
+          isActive: 0,
+        },
+        {
+          where: {
+            idShoppingCart: idShoppingCart,
+          },
+        }
+      );
+
+      res.status(200).json({
+        ok: true,
+        status: 200,
+        body: updateShoppingCart,
+        message: "Shopping cart deactivate",
+      });
+    } catch (err) {
+      console.error("Error", err);
+      res.status(500).json({
+        ok: false,
+        status: 500,
+        error: err,
+      });
+    }
+  }
+);
 
 // crear shopping cart
 router.post("/shoppingCart", authenticateToken, async (req, res) => {

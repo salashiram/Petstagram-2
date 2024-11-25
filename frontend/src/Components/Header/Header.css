@@ -7,6 +7,14 @@ header {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
+nav {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap; /* Evitar que los elementos se envuelvan */
+}
+
 nav .logo {
   font-size: 3rem;
   color: #ff1493;
@@ -20,21 +28,18 @@ nav ul {
   padding: 0;
   margin: 0;
   display: flex;
+  flex-wrap: nowrap; /* Asegurar una sola fila */
+  gap: 1.5rem; /* Espaciado entre elementos */
 }
 
-.menu-left {
+.menu-left,
+.menu-right {
   display: flex;
+  flex-wrap: nowrap; /* Evitar saltos de línea */
 }
 
 .menu-right {
-  display: flex;
   align-items: center;
-  gap: 1.5rem;
-}
-
-nav ul li {
-  margin-right: 1.5rem;
-  position: relative;
 }
 
 nav ul li a {
@@ -44,27 +49,7 @@ nav ul li a {
   font-weight: bold;
   padding: 0.5rem 0;
   transition: color 0.3s ease, transform 0.3s ease;
-}
-
-nav ul li a:hover {
-  color: #fff;
-  transform: scale(1.1);
-}
-
-nav ul li::after {
-  content: "";
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-  right: 0;
-  height: 2px;
-  background-color: #ff69b4;
-  transform: scaleX(0);
-  transition: transform 0.3s ease;
-}
-
-nav ul li:hover::after {
-  transform: scaleX(1);
+  white-space: nowrap; /* Prevenir que el texto se divida */
 }
 
 .cart-icon {

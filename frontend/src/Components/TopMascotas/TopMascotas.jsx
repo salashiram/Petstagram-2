@@ -11,9 +11,9 @@ const TopMascotas = () => {
   return (
     <div className="TopMascotas-container">
       <Header />
-      <main>
+      <Announcement />
+      <main className="Main_Top_Macotas">
         <h2 className="perfil-titulo">LOS REYES DEL HOGAR</h2>
-        <Announcement />
         <Post
           username="MascotaUno"
           imageSrc={ejemplo2} // Usar la imagen importada

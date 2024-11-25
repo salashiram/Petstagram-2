@@ -48,8 +48,8 @@ User.init(
       allowNull: false,
       defaultValue: false,
     },
-    userImage: {
-      type: DataTypes.STRING,
+    profileImage: {
+      type: DataTypes.BLOB("long"),
       allowNull: true,
     },
   },
