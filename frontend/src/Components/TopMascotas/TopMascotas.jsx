@@ -15,7 +15,7 @@ const TopMascotas = () => {
       <main className="Main_Top_Macotas">
         <h2 className="perfil-titulo">LOS REYES DEL HOGAR</h2>
         <Post
-          username="MascotaUno"
+          username="salashiram"
           imageSrc={ejemplo2} // Usar la imagen importada
           caption="Gato coqueto :p."
           ranking={1}

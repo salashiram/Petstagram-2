@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Post from "../Post/Post";
 import "./UploadSection.css";
 import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const UploadSection = () => {
@@ -11,6 +12,7 @@ const UploadSection = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [posts, setPosts] = useState([]);
+  const navigate = useNavigate();
 
   // const handleFileChange = (e) => {
   //   const selectedFile = e.target.files[0];
@@ -126,6 +128,7 @@ const UploadSection = () => {
           if (response.data.ok) {
             const newPost = { ...response.data.post, user_name: userName };
             setPosts([newPost, ...posts]);
+            // navigate("/Home");
           } else {
             console.error("Error al crear el post:", response.data.message);
           }

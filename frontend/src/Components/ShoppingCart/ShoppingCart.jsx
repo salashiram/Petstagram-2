@@ -102,36 +102,9 @@ const Carrito = () => {
       0
     );
 
-  const handleCheckout = () => {
-    // Aquí puedes hacer la solicitud para finalizar la compra
-    const token = localStorage.getItem("token");
-    const idUser = jwtDecode(token).id;
-
-    axios
-      .post(
-        `http://localhost:3001/api/v1/cart/checkout`,
-        {
-          payMethod,
-          userAddress,
-          total,
-          idUser,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      )
-      .then((response) => {
-        console.log("Compra realizada:", response.data);
-        // Redirigir a una página de confirmación
-        navigate("/confirmacion");
-      })
-      .catch((err) => {
-        console.error("Error al procesar el pago:", err);
-        setError("Hubo un problema al procesar el pago.");
-      });
+  const handleCheckout = async () => {
+    alert("Su compra se proceso con exito!");
+    navigate("/Recompensas");
   };
 
   return (

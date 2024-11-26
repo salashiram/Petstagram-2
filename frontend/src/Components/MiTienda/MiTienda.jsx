@@ -18,7 +18,23 @@ function MiTienda() {
         const response = await axios.get(
           "http://localhost:3001/api/v1/products/product"
         );
-        setProductos(response.data.body);
+
+        if (response.data.ok) {
+          // Mapea los productos y convierte el buffer a URL para cada imagen
+          const productosConImagenes = response.data.body.map((producto) => {
+            const productImageBuffer = producto.image;
+            const imageUrl = productImageBuffer?.data
+              ? URL.createObjectURL(
+                  new Blob([new Uint8Array(productImageBuffer.data)], {
+                    type: "image/jpeg",
+                  })
+                )
+              : null;
+            return { ...producto, imageUrl };
+          });
+
+          setProductos(productosConImagenes);
+        }
       } catch (err) {
         console.error("Error al obtener productos:", err);
         setError("No se pudieron cargar los productos. Intenta nuevamente.");
@@ -105,7 +121,7 @@ function MiTienda() {
                   nombre={producto.name}
                   descuento={`${producto.discount}%`}
                   precio={producto.unityPrice}
-                  imgSrc={exampleImage}
+                  imgSrc={producto.imageUrl || exampleImage} // Usa la imagen generada o una por defecto
                   onAddToCart={() => handleAddToCart(producto.idProduct)} // Pasa la función con el ID del producto
                 />
               ))}

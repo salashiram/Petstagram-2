@@ -29,33 +29,63 @@ const EditarProductos = () => {
   //   }
   // };
 
+  // const handleImageChange = (e) => {
+  //   const file = e.target.files[0];
+  //   console.log(file);
+  //   if (file) {
+  //     const formData = new FormData();
+  //     formData.append("image", file);
+  //     console.log(formData);
+
+  //     axios
+  //       .post("http://localhost:3001/api/v1/upload", formData, {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       })
+  //       .then((response) => {
+  //         console.log("Respuesta del backend:", response);
+  //         const filePath = response.data.filePath;
+  //         setProducto((prevProducto) => ({
+  //           ...prevProducto, // Esto asegura que no se pierdan otros valores
+  //           image: filePath,
+  //         }));
+  //       })
+  //       .catch((error) => {
+  //         // console.log("Respuesta del backend:", response);
+  //         console.error("Error al subir la imagen:", error);
+  //         alert("Hubo un error al subir la imagen");
+  //       });
+  //   } else {
+  //     alert("No se seleccionó una imagen");
+  //   }
+  // };
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     console.log(file);
     if (file) {
-      const formData = new FormData();
-      formData.append("image", file);
-      console.log(formData);
+      const reader = new FileReader();
 
-      axios
-        .post("http://localhost:3001/api/v1/upload", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((response) => {
-          console.log("Respuesta del backend:", response);
-          const filePath = response.data.filePath;
-          setProducto((prevProducto) => ({
-            ...prevProducto, // Esto asegura que no se pierdan otros valores
-            image: filePath,
-          }));
-        })
-        .catch((error) => {
-          // console.log("Respuesta del backend:", response);
-          console.error("Error al subir la imagen:", error);
-          alert("Hubo un error al subir la imagen");
-        });
+      reader.onload = () => {
+        // `reader.result` contiene la imagen codificada en base64
+        const base64Image = reader.result;
+        console.log("Imagen en base64:", base64Image);
+
+        // Actualiza el estado del producto con la imagen en base64
+        setProducto((prevProducto) => ({
+          ...prevProducto,
+          image: base64Image,
+        }));
+      };
+
+      reader.onerror = (error) => {
+        console.error("Error al leer el archivo:", error);
+        alert("Hubo un error al leer el archivo");
+      };
+
+      // Convierte la imagen a base64
+      reader.readAsDataURL(file);
     } else {
       alert("No se seleccionó una imagen");
     }

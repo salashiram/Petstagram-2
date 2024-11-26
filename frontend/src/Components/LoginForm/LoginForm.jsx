@@ -137,7 +137,7 @@ const LoginForm = () => {
         console.log("login successfully");
         localStorage.setItem("token", response.data.token);
         console.log(response.data.token);
-        navigate("/UserProfile");
+        navigate("/Home");
       }
     } catch (error) {
       console.error("Error al iniciar sesión", error);
@@ -172,7 +172,7 @@ const LoginForm = () => {
       console.log(response.data);
       alert("Usuario registrado con éxito");
       localStorage.setItem("token", response.data.token);
-      navigate("/UserProfile");
+      navigate("/EditProfile");
     } catch (error) {
       if (error.response && error.response.data.message) {
         const errorMessage = error.response.data.message;

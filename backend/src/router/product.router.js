@@ -62,7 +62,21 @@ router.post("/product", authenticateToken, async (req, res) => {
     });
   }
 
+  let bufferImg = null;
+
   try {
+    if (image) {
+      if (image.startsWith("data:image")) {
+        const base64Data = image.split(",")[1];
+        bufferImg = Buffer.from(base64Data, "base64");
+      } else {
+        return res.status(400).json({
+          ok: false,
+          message: "Invalid image format. Expected Base64 with data URI.",
+        });
+      }
+    }
+
     // const idUserFromToken = req.idUser;
     const newProduct = await Product.create({
       idUser,
@@ -70,7 +84,7 @@ router.post("/product", authenticateToken, async (req, res) => {
       discount,
       name,
       description,
-      image,
+      image: bufferImg,
       stock,
       unityPrice,
     });
